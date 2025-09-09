@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Agendamento</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1877f2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="fabinho_logo_apple.png">
+    <!-- Favicon / General App Icon for Browsers -->
+    <link rel="icon" id="dynamic-favicon" href="fabinho_logo_192.png" sizes="192x192">
+</head>
+<body>
+    <div class="header-logo-container">
+        <img id="header-logo" src="logo para o app.png" alt="Logo do Negócio" style="display: none;">
+    </div>
+    <div class="container">
+        <div class="mode-toggle">
+            <span id="view-mode-label">Modo Cliente</span>
+            <label class="switch">
+                <input type="checkbox" id="owner-mode-toggle">
+                <span class="slider round"></span>
+            </label>
+            <!-- Hamburger menu icon for owner mode -->
+            <div id="owner-menu-toggle" class="hamburger-menu" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- CLIENT VIEW -->
+        <div id="client-view">
+            <div id="client-cover-photo-display" style="display: none;">
+                <img id="client-cover-photo" src="" alt="Capa do Negócio">
+            </div>
+            <h1>Novo Agendamento</h1>
+            
+            <div id="booking-container">
+                <div class="scissors-background">
+                    <div class="scissor-item s1"></div>
+                    <div class="scissor-item s2"></div>
+                    <div class="scissor-item s3"></div>
+                    <div class="scissor-item s4"></div>
+                    <div class="scissor-item s5"></div>
+                    <div class="scissor-item s6"></div>
+                    <div class="scissor-item s7"></div>
+                    <div class="scissor-item s8"></div>
+                </div>
+                <!-- Step 1: Client Info / Select -->
+                <div id="step-1" class="form-step active-step">
+                    <h2>1. Informações do Cliente</h2>
+                    <div id="client-selection-owner" style="display: none;">
+                        <label for="existing-client-select" class="selection-label">Selecione um cliente existente:</label>
+                        <select id="existing-client-select">
+                            <option value="">-- Novo Cliente --</option>
+                        </select>
+                    </div>
+                    <form id="client-info-form">
+                        <input type="text" id="first-name" placeholder="Nome" required>
+                        <input type="text" id="last-name" placeholder="Sobrenome" required>
+                        <input type="tel" id="whatsapp" placeholder="WhatsApp (somente números)" pattern="[0-9]{10,11}" required>
+                        <button type="button" id="next-to-step-2" class="nav-btn">Próximo</button>
+                    </form>
+                </div>
+
+                <!-- Step 2: Service Selection -->
+                <div id="step-2" class="form-step">
+                    <h2>2. Escolha o Serviço</h2>
+                    <div id="service-list">
+                        <!-- Serviços serão inseridos aqui via JavaScript -->
+                    </div>
+                    <div class="navigation-buttons">
+                        <button type="button" id="prev-to-step-1" class="nav-btn secondary">Anterior</button>
+                        <button type="button" id="next-to-step-3" class="nav-btn" disabled>Próximo</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Date and Time -->
+                <div id="step-3" class="form-step">
+                    <h2>3. Escolha Data e Horário</h2>
+                     <div id="date-selection-container">
+                        <p class="selection-label">Selecione uma data:</p>
+                        <div id="date-picker">
+                            <!-- Datas serão inseridas aqui -->
+                        </div>
+                     </div>
+                     <div id="time-selection-container" style="display: none;">
+                        <p class="selection-label">Selecione um horário:</p>
+                        <div id="time-slots">
+                             <!-- Horários serão inseridos aqui -->
+                        </div>
+                     </div>
+                    <div class="navigation-buttons">
+                        <button type="button" id="prev-to-step-2" class="nav-btn secondary">Anterior</button>
+                        <button type="button" id="submit-booking" class="nav-btn" disabled>Agendar</button>
+                    </div>
+                </div>
+                 <!-- Step 4: Confirmation -->
+                <div id="step-4" class="form-step">
+                    <h2>Agendamento Confirmado!</h2>
+                    <p>Seu agendamento foi realizado com sucesso.</p>
+                    <!-- Novo botão para notificar o proprietário via WhatsApp -->
+                    <a id="whatsapp-owner-notify-btn" class="whatsapp-icon-btn" target="_blank" rel="noopener noreferrer">
+                        <img src="whatsapp_icon.png" alt="Notificar via WhatsApp">
+                    </a>
+                    <p class="whatsapp-instruction">Agora clica no ícone WhatsApp para mandar o comprovante.</p>
+                    <button type="button" id="new-booking" class="nav-btn">Fazer Novo Agendamento</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OWNER PANEL: This now acts as the content display for owner mode, managed by the sidebar menu -->
+        <div id="owner-panel" style="display: none;">
+            <h1 id="owner-main-panel-title">Painel do Proprietário</h1>
+            
+            <!-- All owner sections, initially hidden, will be revealed via menu selection -->
+            <div class="owner-section content-section active" id="owner-booking">
+                <h2>Fazer Agendamento</h2>
+                <div id="owner-booking-container">
+                    <div class="scissors-background">
+                        <div class="scissor-item s1"></div>
+                        <div class="scissor-item s2"></div>
+                        <div class="scissor-item s3"></div>
+                        <div class="scissor-item s4"></div>
+                        <div class="scissor-item s5"></div>
+                        <div class="scissor-item s6"></div>
+                        <div class="scissor-item s7"></div>
+                        <div class="scissor-item s8"></div>
+                    </div>
+                    <!-- Step 1: Client Info / Select -->
+                    <div id="owner-step-1" class="form-step active-step">
+                        <h2>1. Informações do Cliente</h2>
+                        <div id="owner-client-selection">
+                            <label for="owner-existing-client-select" class="selection-label">Selecione um cliente existente:</label>
+                            <select id="owner-existing-client-select">
+                                <option value="">-- Novo Cliente --</option>
+                            </select>
+                        </div>
+                        <form id="owner-client-info-form">
+                            <input type="text" id="owner-first-name" placeholder="Nome" required>
+                            <input type="text" id="owner-last-name" placeholder="Sobrenome" required>
+                            <input type="tel" id="owner-whatsapp" placeholder="WhatsApp (somente números)" pattern="[0-9]{10,11}" required>
+                            <button type="button" id="owner-next-to-step-2" class="nav-btn">Próximo</button>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Service Selection -->
+                    <div id="owner-step-2" class="form-step">
+                        <h2>2. Escolha o Serviço</h2>
+                        <div id="owner-service-list">
+                            <!-- Serviços serão inseridos aqui via JavaScript -->
+                        </div>
+                        <div class="navigation-buttons">
+                            <button type="button" id="owner-prev-to-step-1" class="nav-btn secondary">Anterior</button>
+                            <button type="button" id="owner-next-to-step-3" class="nav-btn" disabled>Próximo</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Date and Time (Owner Mode - Timeline View) -->
+                    <div id="owner-step-3" class="form-step">
+                        <h2>3. Escolha Data e Horário</h2>
+                         <div id="owner-date-selection-container">
+                            <p class="selection-label">Selecione uma data:</p>
+                            <div id="owner-date-picker">
+                                <!-- Dates serão inseridas aqui -->
+                            </div>
+                         </div>
+
+                         <!-- Owner Booking Timeline View -->
+                         <div id="owner-timeline-view" style="display: none;">
+                            <p class="selection-label">Selecione um horário:</p>
+                            <div class="timeline-grid-container">
+                                <div class="time-labels">
+                                    <!-- Hour labels (e.g., 10:00, 11:00) -->
+                                </div>
+                                <div class="timeline-slots-area">
+                                    <!-- Individual 15/30 min slots will go here -->
+                                    <div class="current-time-indicator"></div>
+                                </div>
+                            </div>
+                         </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="owner-prev-to-step-2" class="nav-btn secondary">Anterior</button>
+                            <button type="button" id="owner-submit-booking" class="nav-btn" disabled>Agendar</button>
+                        </div>
+                    </div>
+                     <!-- Step 4: Confirmation -->
+                    <div id="owner-step-4" class="form-step">
+                        <h2>Agendamento Confirmado!</h2>
+                        <p>Seu agendamento foi realizado com sucesso.</p>
+                        <!-- Novo botão para notificar o proprietário via WhatsApp -->
+                        <a id="owner-whatsapp-owner-notify-btn" class="whatsapp-icon-btn" target="_blank" rel="noopener noreferrer">
+                            <img src="whatsapp_icon.png" alt="Notificar via WhatsApp">
+                        </a>
+                        <p class="whatsapp-instruction">Agora clica no ícone WhatsApp para mandar o comprovante.</p>
+                        <button type="button" id="owner-new-booking" class="nav-btn">Fazer Novo Agendamento</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="owner-section content-section" id="logo-management">
+                <h2>Gestão de Logo</h2>
+                <div class="logo-preview-container">
+                    <img id="logo-preview" src="/logo para o app.png" alt="Preview da Logo" class="current-logo-preview" style="display: none;">
+                </div>
+                <label for="logo-upload-input" class="upload-label">
+                    <span>Selecionar Nova Logo</span>
+                    <input type="file" id="logo-upload-input" accept="image/*" style="display: none;">
+                </label>
+                <button type="button" id="remove-logo-btn" class="nav-btn delete-btn">Remover Logo</button>
+            </div>
+
+            <div class="owner-section content-section" id="app-icon-management">
+                <h2>Gestão de Ícone do Aplicativo</h2>
+                <div class="logo-preview-container">
+                    <img id="app-icon-preview" src="fabinho_logo_192.png" alt="Preview do Ícone do App" class="current-logo-preview" style="display: none;">
+                </div>
+                <label for="app-icon-upload-input" class="upload-label">
+                    <span>Selecionar Novo Ícone</span>
+                    <input type="file" id="app-icon-upload-input" accept="image/*" style="display: none;">
+                </label>
+                <button type="button" id="remove-app-icon-btn" class="nav-btn delete-btn">Remover Ícone</button>
+                <p class="info-text">
+                    *Nota: A troca do ícone do aplicativo pode não ser instantânea para PWAs já instalados e pode requerer que o usuário reinstale o aplicativo para ver a mudança completa em algumas plataformas.
+                </p>
+            </div>
+
+            <div class="owner-section content-section" id="cover-photo-management">
+                <h2>Gestão de Foto de Capa</h2>
+                <div class="cover-photo-preview-container">
+                    <img id="cover-photo-preview" src="" alt="Preview da Capa" style="display: none;">
+                </div>
+                <label for="cover-photo-upload-input" class="upload-label">
+                    <span>Selecionar Nova Capa</span>
+                    <input type="file" id="cover-photo-upload-input" accept="image/*" style="display: none;">
+                </label>
+                <button type="button" id="remove-cover-photo-btn" class="nav-btn delete-btn">Remover Capa</button>
+            </div>
+
+            <div class="owner-section content-section" id="client-management">
+                <h2>Clientes</h2>
+                <form id="add-client-form">
+                    <h3>Cadastrar Novo Cliente</h3>
+                    <input type="text" id="new-client-firstname" placeholder="Nome" required>
+                    <input type="text" id="new-client-lastname" placeholder="Sobrenome" required>
+                    <input type="tel" id="new-client-whatsapp" placeholder="WhatsApp" pattern="[0-9]{10,11}" required>
+                    <button type="submit" class="nav-btn">Adicionar Cliente</button>
+                </form>
+                <h3>Clientes Cadastrados</h3>
+                <ul id="client-list"></ul>
+            </div>
+
+            <div class="owner-section content-section" id="service-management">
+                <h2>Serviços e Pacotes</h2>
+                <form id="add-service-form">
+                    <h3>Cadastrar Novo Serviço</h3>
+                    <input type="text" id="new-service-name" placeholder="Nome do Serviço" required>
+                    <input type="number" id="new-service-duration" placeholder="Duração (minutos)" required min="5">
+                    <input type="number" id="new-service-price" placeholder="Preço (R$)" required min="0" step="0.01">
+                    <button type="submit" class="nav-btn">Adicionar Serviço</button>
+                </form>
+                <h3>Serviços Cadastrados</h3>
+                <ul id="service-management-list"></ul>
+            </div>
+
+            <div class="owner-section content-section" id="completed-appointments-management">
+                <h2>Agendamentos Concluídos</h2>
+                <div id="completed-appointments-container">
+                    <!-- Completed appointments will be rendered here, grouped by date -->
+                </div>
+            </div>
+
+            <div class="owner-section content-section" id="financial-management">
+                <h2>Gestão Financeira</h2>
+                <div class="financial-summary">
+                    <p><strong>Receita Total:</strong> <span id="total-revenue">R$ 0,00</span></p>
+                    <p><strong>Receita Hoje:</strong> <span id="daily-revenue">R$ 0,00</span></p>
+                    <p><strong>Receita Semana:</strong> <span id="weekly-revenue">R$ 0,00</span></p>
+                    <p><strong>Receita Este Mês:</strong> <span id="monthly-revenue">R$ 0,00</span></p>
+                </div>
+                <h3>Detalhes das Transações Concluídas</h3>
+                <ul id="financial-transactions-list">
+                    <!-- Transactions will be inserted here -->
+                </ul>
+            </div>
+
+            <div class="owner-section content-section" id="pending-appointments-display">
+                <h2 id="appointments-title">Agendamentos Pendentes</h2>
+                <div class="view-switcher">
+                    <button id="list-view-btn" class="nav-btn secondary active">Visualização em Lista</button>
+                    <button id="timeline-view-btn" class="nav-btn secondary">Visualização em Linha do Tempo</button>
+                </div>
+
+                <!-- Date selection for Timeline View -->
+                <div id="timeline-date-selection-container" style="display: none;">
+                    <p class="selection-label">Selecione uma data para a Linha do Tempo:</p>
+                    <div id="timeline-date-picker">
+                        <!-- Dates will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <ul id="appointment-list" class="active-view">
+                    <!-- Agendamentos serão inseridos aqui via JavaScript -->
+                </ul>
+
+                <!-- Timeline View -->
+                <div id="timeline-view" style="display: none;">
+                    <div class="timeline-grid-container">
+                        <div class="time-labels">
+                            <!-- Hour labels (e.g., 10:00, 11:00) -->
+                        </div>
+                        <div class="timeline-slots-area">
+                            <!-- Individual appointment blocks will go here -->
+                            <div class="current-time-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New: Menu Organization Section -->
+            <div class="owner-section content-section" id="menu-organization-management">
+                <h2>Organizar Menu</h2>
+                <p>Arraste e solte os itens para reordenar o menu do proprietário.</p>
+                <ul id="sortable-menu-list" class="sortable-list">
+                    <!-- Menu items will be populated here by JavaScript for drag-and-drop -->
+                </ul>
+                <button type="button" id="save-menu-order-btn" class="nav-btn">Salvar Ordem</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OWNER MENU SIDEBAR -->
+    <div id="owner-sidebar-menu" class="owner-sidebar">
+        <div class="owner-sidebar-header">
+            <h3>Menu do Proprietário</h3>
+            <button id="close-owner-menu" class="close-btn">&times;</button>
+        </div>
+        <nav class="owner-menu-nav">
+            <ul id="owner-menu-items-list">
+                <!-- Menu items will be rendered here by JavaScript based on saved order -->
+                <li><a href="#" class="menu-item" data-section-id="owner-booking">Fazer Agendamento</a></li>
+                <li><a href="#" class="menu-item" data-section-id="logo-management">Gestão de Logo</a></li>
+                <li><a href="#" class="menu-item" data-section-id="app-icon-management">Gestão de Ícone do Aplicativo</a></li>
+                <li><a href="#" class="menu-item" data-section-id="cover-photo-management">Gestão de Foto de Capa</a></li>
+                <li><a href="#" class="menu-item" data-section-id="client-management">Clientes</a></li>
+                <li><a href="#" class="menu-item" data-section-id="service-management">Serviços e Pacotes</a></li>
+                <li><a href="#" class="menu-item" data-section-id="completed-appointments-management">Agendamentos Concluídos</a></li>
+                <li><a href="#" class="menu-item" data-section-id="financial-management">Gestão Financeira</a></li>
+                <li><a href="#" class="menu-item" data-section-id="pending-appointments-display">Agendamentos Pendentes</a></li>
+                <li><a href="#" class="menu-item" data-section-id="menu-organization-management">Organizar Menu</a></li>
+            </ul>
+        </nav>
+    </div>
+    <!-- Overlay for when the sidebar is open -->
+    <div id="owner-sidebar-overlay" class="owner-sidebar-overlay"></div>
+
+    <script src="script.js"></script>
+
+<script>
+  const senhaCorreta = "bfc00";
+  let senha = "";
+  while (senha !== senhaCorreta) {
+    senha = prompt("Digite a senha para acessar o sistema:");
+    if (senha === null) {
+      document.body.innerHTML = "<h2 style='color:red;text-align:center;margin-top:50px;'>Acesso bloqueado!</h2>";
+      throw new Error("Acesso bloqueado");
+    }
+  }
+  console.log("Acesso autorizado");
+</script>
+
+</body>
+</html>

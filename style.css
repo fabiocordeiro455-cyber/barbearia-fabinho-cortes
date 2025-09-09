@@ -1,0 +1,1149 @@
+:root {
+    /* Define CSS variables for timeline */
+    --timeline-slot-height-per-minute: 2px; /* How many pixels per minute */
+    --business-hours-start-minutes: 600; /* 10:00 AM in minutes from midnight */
+    --business-hours-end-minutes: 1260; /* 9:00 PM in minutes from midnight */
+    /* Calculate total height for timeline based on business hours */
+    --timeline-total-content-height: calc( (var(--business-hours-end-minutes) - var(--business-hours-start-minutes)) * var(--timeline-slot-height-per-minute) );
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #000; /* Black background as requested */
+    background-image: url('smoke.png'); /* Smoke image for the background */
+    background-size: cover; /* Ensure the smoke covers the entire background */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed; /* Keep smoke fixed while content scrolls */
+    animation: smoke-drift 60s linear infinite alternate; /* Subtle, slow smoke drift animation */
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+@keyframes smoke-drift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 50% 50%; }
+}
+
+.mode-toggle {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    position: relative; /* For positioning hamburger menu */
+}
+
+#view-mode-label {
+    font-weight: 600;
+    color: #606770;
+}
+
+/* Hamburger Menu Icon */
+.hamburger-menu {
+    width: 30px;
+    height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    cursor: pointer;
+    margin-left: 15px; /* Space from toggle switch */
+}
+
+.hamburger-menu span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #1877f2;
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #1877f2;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #1877f2;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.header-logo-container {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#header-logo {
+    width: 260px; /* Increased size */
+    height: 260px; /* Increased size */
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: block; /* Make the image a block-level element */
+    margin: 0 auto; /* Center the block-level image horizontally */
+}
+
+.container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Owner Sidebar Menu */
+.owner-sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Initially off-screen */
+    width: 280px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    transition: left 0.3s ease-in-out;
+    z-index: 1001; /* Above other content */
+    display: flex;
+    flex-direction: column;
+}
+
+.owner-sidebar.active {
+    left: 0;
+}
+
+.owner-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #dddfe2;
+}
+
+.owner-sidebar-header h3 {
+    margin: 0;
+    color: #1c1e21;
+    font-size: 1.3em;
+}
+
+.owner-sidebar .close-btn {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    color: #606770;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+.owner-sidebar .close-btn:hover {
+    color: #fa3e3e;
+}
+
+.owner-menu-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.owner-menu-nav li a {
+    display: block;
+    padding: 15px 20px;
+    color: #1c1e21;
+    text-decoration: none;
+    border-bottom: 1px solid #f0f2f5;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.owner-menu-nav li a:hover {
+    background-color: #e7f3ff;
+    color: #1877f2;
+}
+
+.owner-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Below sidebar, above container */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.owner-sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Owner Panel Sections */
+#owner-panel {
+    margin-top: 20px; /* Space below mode toggle */
+}
+
+#owner-main-panel-title {
+    text-align: center;
+    color: #1c1e21;
+    margin-bottom: 30px;
+}
+
+.owner-section {
+    margin-bottom: 40px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Content sections within owner panel, controlled by menu */
+.content-section {
+    display: none; /* Hidden by default, shown by JS */
+}
+
+.content-section.active {
+    display: block;
+}
+
+.owner-section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #1877f2;
+    text-align: left;
+}
+
+.owner-section h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: #1c1e21;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 5px;
+}
+
+.owner-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.owner-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.owner-section li {
+    background: #f7f8fa;
+    padding: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.owner-section .item-details span {
+     display: block;
+}
+
+.owner-section .item-name {
+    font-weight: 600;
+}
+
+.owner-section .item-sub-details {
+    font-size: 0.9em;
+    color: #606770;
+}
+
+.owner-section .delete-btn {
+    background: #fa3e3e;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.owner-section .delete-btn:hover {
+    background: #e03030;
+}
+
+/* New style for the 'complete' button */
+.complete-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    line-height: 1.2;
+}
+
+.complete-btn:hover {
+    background-color: #45a049;
+}
+
+/* Owner Panel: Completed Appointments */
+#completed-appointments-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.completed-day-column {
+    flex: 1 1 250px; /* Allow columns to grow but have a base width */
+    min-width: 250px;
+    max-width: 100%;
+    background: #f7f8fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dddfe2;
+    box-sizing: border-box;
+}
+
+.completed-day-column h3 {
+    text-align: center;
+    color: #1877f2;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #e4e6eb;
+    padding-bottom: 10px;
+}
+
+.completed-day-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.completed-day-column li {
+    background-color: #fff;
+    border: 1px solid #f0f2f5;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    display: flex; /* Added for layout */
+    justify-content: space-between; /* Added for layout */
+    align-items: center; /* Added for layout */
+}
+
+.completed-day-column li:last-child {
+    margin-bottom: 0;
+}
+
+.completed-day-column .client-name {
+    font-weight: 600;
+    color: #050505;
+}
+
+.completed-day-column .service-details {
+    color: #606770;
+    font-size: 0.85em;
+}
+
+/* Added styles for actions in completed appointments */
+.completed-day-column .actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+/* Financial Management */
+.financial-summary {
+    background: #e7f3ff;
+    border: 1px solid #a0bdf5;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.financial-summary p {
+    margin: 8px 0;
+    font-size: 1em; /* Reduced from 1.1em */
+    color: #1c1e21;
+}
+
+.financial-summary span {
+    font-weight: bold;
+    color: #1877f2;
+}
+
+#financial-transactions-list li {
+    font-size: 0.85em; /* Reduced from 0.9em */
+    padding: 8px; /* Adjusted padding */
+    margin-bottom: 5px; /* Added margin for better separation */
+}
+
+/* Menu Organization */
+.sortable-list {
+    list-style: none;
+    padding: 0;
+}
+
+.sortable-list-item {
+    background: #f7f8fa;
+    padding: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sortable-list-item:hover {
+    background-color: #e7f3ff;
+    border-color: #a0bdf5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.sortable-list-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #1877f2;
+    background-color: #f0f2f5;
+}
+
+.sortable-list-item span {
+    font-weight: 600;
+    color: #1c1e21;
+}
+
+/* Timeline View (Pending Appointments & Owner Booking) */
+.view-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#timeline-date-selection-container, #owner-date-selection-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#timeline-date-selection-container .date-option, #owner-date-selection-container .date-option {
+    min-width: 70px; /* Ensure date buttons are consistent */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-grid-container {
+    display: grid;
+    grid-template-columns: 60px 1fr; /* Time labels | Appointment/Slot area */
+    gap: 5px;
+    height: 60vh; /* Responsive height */
+    max-height: 800px; /* Max height to prevent excessive size on large screens */
+    overflow-y: auto;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    background-color: #f7f8fa;
+    position: relative; /* For current-time-indicator within grid container */
+    margin-top: 20px;
+}
+
+.time-labels {
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: #f7f8fa; /* Ensure background covers scrolling content */
+    z-index: 2;
+    padding-top: 10px; /* Align with timeline-slots-area padding */
+    height: calc(var(--timeline-total-content-height) + 10px); /* Match scrollable height + initial padding */
+    display: flex;
+    flex-direction: column;
+    user-select: none; /* Prevent text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.time-label-item {
+    height: calc(60 * var(--timeline-slot-height-per-minute)); /* Height for 1 hour block (60 min) */
+    display: flex;
+    align-items: flex-start; /* Align text to the top of its slot */
+    padding-left: 8px;
+    font-size: 0.85em;
+    color: #606770;
+    border-bottom: 1px dashed #e4e6eb;
+    box-sizing: border-box;
+    pointer-events: none; /* Ensure labels are not interactive */
+}
+
+.time-label-item:last-of-type {
+    border-bottom: none;
+}
+
+.timeline-slots-area {
+    position: relative;
+    padding-top: 10px; /* Consistent with time labels */
+    background-color: #fff;
+    min-height: var(--timeline-total-content-height); /* Set height dynamically from JS */
+    border-left: 1px solid #e4e6eb; /* Separator from time labels */
+}
+
+/* Appointment block styling for pending appointments */
+.timeline-appointment-block {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    background-color: #e7f3ff; /* Light blue */
+    border: 1px solid #1877f2;
+    border-radius: 4px;
+    padding: 5px;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: #1c1e21;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1; /* Below current time indicator */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.timeline-appointment-block:hover {
+    background-color: #d0e7ff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-appointment-block .client-name {
+    font-weight: 600;
+    font-size: 0.6em; /* Smaller text for client name */
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+    line-height: 1.2; /* Ensure consistent line height */
+}
+
+.timeline-appointment-block .service-name,
+.timeline-appointment-block .datetime-display {
+    font-size: 0.7em; /* Even smaller for service/time */
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.timeline-appointment-block .actions {
+    display: flex;
+    gap: 3px; /* Smaller gap between buttons */
+    margin-top: 3px; /* Smaller margin above buttons */
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.timeline-appointment-block .actions button {
+    padding: 2px 5px; /* Slightly smaller padding for buttons */
+    font-size: 0.6em; /* Even smaller font for buttons */
+    border-radius: 3px;
+    min-width: unset;
+    line-height: 1;
+}
+
+/* Owner Booking Timeline Slots */
+.owner-timeline-slot {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    border-radius: 4px;
+    padding: 5px;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-size: 0.8em;
+    color: #1c1e21;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.owner-timeline-slot.available {
+    background-color: #d4edda; /* Light green */
+    border-color: #28a745;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.owner-timeline-slot.available:hover {
+    background-color: #c3e6cb;
+    border-color: #218838;
+}
+
+.owner-timeline-slot.available.selected {
+    background-color: #28a745;
+    color: white;
+    border-color: #218838;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.owner-timeline-slot.booked {
+    background-color: #f8d7da; /* Light red */
+    border-color: #dc3545;
+    cursor: not-allowed;
+    color: #6a0000;
+    opacity: 0.7;
+}
+
+.owner-timeline-slot .time-display {
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+.owner-timeline-slot .details-display {
+    font-size: 0.75em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Current time indicator */
+.current-time-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #fa3e3e; /* Red line */
+    z-index: 3; /* Above appointments */
+    display: none; /* Hidden by default, shown by JS if on current date */
+    pointer-events: none; /* Make it non-interactive */
+}
+
+.current-time-indicator::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 8px;
+    height: 8px;
+    background-color: #fa3e3e;
+    border-radius: 50%;
+}
+
+/* Logo and Cover Photo Preview containers */
+.logo-preview-container, .cover-photo-preview-container {
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px dashed #dddfe2;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.logo-preview-container img, .cover-photo-preview-container img {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px; /* Limit height for previews */
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific styling for app icon preview, can be smaller/circular */
+#app-icon-preview {
+    width: 100px; /* Standard icon size for preview */
+    height: 100px;
+    border-radius: 15%; /* Slightly rounded square, common for app icons */
+    object-fit: contain; /* Ensure full image is visible */
+    background-color: #fff; /* White background for icon if transparent */
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.upload-label {
+    display: block;
+    background-color: #1877f2;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.upload-label:hover {
+    background-color: #166fe5;
+}
+
+.owner-section .info-text {
+    font-size: 0.85em;
+    color: #606770;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f0f2f5;
+    border-radius: 6px;
+    border-left: 3px solid #1877f2;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #1c1e21;
+}
+
+#booking-container {
+    margin-bottom: 40px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+    position: relative; /* Needed for absolute positioning of scissors background */
+    overflow: hidden; /* Hide scissors that go outside */
+}
+
+/* Scissors Animation Background */
+.scissors-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place behind booking container content */
+    pointer-events: none; /* Allow clicks to pass through */
+    opacity: 0.8; /* Make background slightly opaque */
+}
+
+.scissor-item {
+    position: absolute;
+    width: 80px; /* Size of the scissor image */
+    height: 80px;
+    background-image: url('scissors.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.08; /* Very subtle */
+    transform-origin: 50% 85%; /* Pivot point for the rotation (adjust based on image) */
+    animation: scissor-swing 5s ease-in-out infinite alternate;
+}
+
+/* Individual scissor positioning and animation delays */
+.s1 { top: 10%; left: 15%; animation-delay: 0s; transform: rotate(-8deg); }
+.s2 { bottom: 20%; right: 10%; animation-delay: 1s; transform: rotate(12deg); }
+.s3 { top: 30%; right: 25%; animation-delay: 2s; transform: rotate(-15deg); }
+.s4 { bottom: 5%; left: 40%; animation-delay: 0.5s; transform: rotate(5deg); }
+.s5 { top: 60%; left: 5%; animation-delay: 1.5s; transform: rotate(-10deg); }
+.s6 { top: 50%; right: 40%; animation-delay: 2.5s; transform: rotate(18deg); }
+.s7 { top: 5%; right: 5%; animation-delay: 3s; transform: rotate(-3deg); }
+.s8 { bottom: 10%; left: 10%; animation-delay: 3.5s; transform: rotate(20deg); }
+
+@keyframes scissor-swing {
+    0% { transform: rotate(-10deg); }
+    100% { transform: rotate(10deg); } /* Simulate subtle opening/closing with rotation */
+}
+
+.form-step {
+    display: none;
+    position: relative; /* Create new stacking context for content */
+    z-index: 1; /* Ensure content is above scissors */
+    background-color: #fff; /* Ensure content has a solid background */
+    padding: 20px 0 0 0; /* Adjust padding if necessary to not push content too far */
+    height: 100%; /* Make sure it covers the full height of the background */
+    box-sizing: border-box; /* Include padding in height calculation */
+}
+
+/* Ensure active step displays correctly */
+.form-step.active-step {
+    display: block;
+}
+
+#client-selection-owner {
+    margin-bottom: 15px;
+}
+
+select#existing-client-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #f7f8fa;
+}
+
+.form-step h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #1877f2;
+}
+
+.selection-label {
+    font-weight: 600;
+    color: #606770;
+    margin-bottom: 10px;
+}
+
+#date-picker, #time-slots, #owner-date-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.date-option, .time-slot {
+    padding: 10px 15px;
+    border: 2px solid #dddfe2;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #f7f8fa;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.date-option .day-of-week {
+    font-size: 0.8em;
+    color: #606770;
+}
+
+.date-option .date-str {
+    font-weight: 600;
+}
+
+.date-option:hover, .time-slot:hover {
+    border-color: #a0bdf5;
+}
+
+.date-option.selected, .time-slot.selected {
+    border-color: #1877f2;
+    background-color: #e7f3ff;
+    color: #1877f2;
+    font-weight: bold;
+}
+
+.time-slot.disabled {
+    cursor: not-allowed;
+    background-color: #f0f2f5;
+    color: #bec3c9;
+    border-color: #dddfe2;
+}
+
+#client-info-form, #date-time-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="number"] { /* Added number input to general styling */
+    padding: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+/* WhatsApp Icon Button */
+.whatsapp-icon-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Adjust size as needed */
+    height: 60px; /* Adjust size as needed */
+    margin: 10px auto; /* Center it */
+    padding: 0;
+    border: none;
+    border-radius: 50%; /* Make it round */
+    background-color: transparent; /* Transparent background for the link itself */
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.whatsapp-icon-btn img {
+    width: 100%; /* Make image fill the button */
+    height: 100%;
+    object-fit: contain; /* Ensure the full icon is visible */
+    border-radius: 50%; /* Keep the image round within the button */
+}
+
+.whatsapp-instruction {
+    text-align: center;
+    font-size: 0.9em;
+    color: #606770;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.nav-btn {
+    padding: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background-color: #166fe5;
+}
+
+.nav-btn:disabled {
+    background-color: #a0bdf5;
+    cursor: not-allowed;
+}
+
+.nav-btn.secondary {
+    background-color: #e4e6eb;
+    color: #4b4f56;
+}
+
+.nav-btn.secondary:hover {
+    background-color: #d8dade;
+}
+
+.nav-btn.secondary.active {
+    background-color: #1877f2;
+    color: white;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.navigation-buttons .nav-btn {
+    flex-grow: 1;
+}
+
+#service-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.service-item {
+    padding: 15px;
+    border: 2px solid #dddfe2;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.service-item:hover {
+    border-color: #a0bdf5;
+}
+
+.service-item.selected {
+    border-color: #1877f2;
+    background-color: #e7f3ff;
+}
+
+.service-item .name {
+    font-weight: 600;
+}
+
+.service-item .details {
+    font-size: 0.9em;
+    color: #606770;
+}
+
+#appointment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+#appointment-form input,
+#appointment-form button {
+    padding: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+#appointment-form input:focus {
+    outline: none;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+#appointment-form button {
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#appointment-form button:hover {
+    background-color: #166fe5;
+}
+
+#appointment-list {
+    list-style: none;
+    padding: 0;
+}
+
+#appointment-list li.empty-message {
+    text-align: center;
+    color: #606770;
+    padding: 20px;
+}
+
+.appointment-item {
+    background: #f7f8fa;
+    padding: 10px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: box-shadow 0.2s ease;
+}
+
+.appointment-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.appointment-item .details {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.appointment-item .details span {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.appointment-item .client-name {
+    font-weight: 600;
+    color: #050505;
+    font-size: 0.9em;
+}
+
+.appointment-item .service-name {
+    font-style: italic;
+    color: #333;
+    font-size: 0.8em;
+}
+
+.appointment-item .datetime {
+    font-size: 0.75em;
+    color: #606770;
+}
+
+.appointment-item .actions {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.appointment-item .delete-btn,
+.complete-btn {
+    padding: 6px 10px;
+    font-size: 0.75em;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    line-height: 1.2;
+}
+
+.appointment-item .delete-btn {
+    background: #fa3e3e;
+    color: white;
+    border: none;
+}
+
+.appointment-item .delete-btn:hover {
+    background: #e03030;
+}
